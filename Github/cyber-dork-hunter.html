@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Dork Hunter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0d0f;
+  --surface:#0f1316;
+  --surface-2:#141a1e;
+  --surface-3:#1c2429;
+  --border:rgba(0,255,136,0.10);
+  --border-strong:rgba(0,255,136,0.22);
+  --text:#d4e8dc;
+  --text-muted:#6a8a74;
+  --text-faint:#3a5045;
+  --green:#00ff88;
+  --green-dim:#00cc6a;
+  --green-dark:#003d1f;
+  --cyan:#00e5ff;
+  --red:#ff4560;
+  --yellow:#ffd600;
+  --orange:#ff9f1c;
+  --radius-sm:4px;
+  --radius-md:8px;
+  --radius-lg:12px;
+  --font-mono:'JetBrains Mono',monospace;
+  --font-body:'Inter','Helvetica Neue',sans-serif;
+  --space-1:0.25rem;
+  --space-2:0.5rem;
+  --space-3:0.75rem;
+  --space-4:1rem;
+  --space-6:1.5rem;
+  --space-8:2rem;
+  --space-12:3rem;
+  --space-16:4rem;
+  --shadow-glow:0 0 20px rgba(0,255,136,0.08);
+  --shadow-card:0 2px 8px rgba(0,0,0,0.5);
+}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{min-height:100dvh;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:1rem;line-height:1.6;overflow-x:hidden}
+img,svg{display:block;max-width:100%}
+button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+
+/* SCAN-LINE OVERLAY */
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,136,0.012) 2px,rgba(0,255,136,0.012) 4px);pointer-events:none;z-index:9999}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(10,13,15,0.92);border-bottom:1px solid var(--border);padding:var(--space-3) var(--space-6)}
+.header-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}
+.logo{display:flex;align-items:center;gap:var(--space-3)}
+.logo-icon svg{width:36px;height:36px}
+.logo-text{font-family:var(--font-mono);font-weight:700;font-size:1.1rem;color:var(--green);letter-spacing:-0.02em}
+.logo-text span{color:var(--text-muted)}
+.header-actions{display:flex;align-items:center;gap:var(--space-3)}
+.status-pill{display:flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-1) var(--space-3);font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted)}
+.status-pill::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.btn-theme{width:36px;height:36px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--surface-2);display:flex;align-items:center;justify-content:center;transition:all 180ms ease;color:var(--text-muted)}
+.btn-theme:hover{border-color:var(--green);color:var(--green);box-shadow:var(--shadow-glow)}
+
+/* HERO */
+.hero{padding:var(--space-12) var(--space-6) var(--space-8);max-width:1280px;margin:0 auto;text-align:center}
+.hero-tag{display:inline-flex;align-items:center;gap:var(--space-2);background:rgba(0,255,136,0.06);border:1px solid var(--border-strong);border-radius:var(--radius-md);padding:4px 12px;font-family:var(--font-mono);font-size:0.72rem;color:var(--green);margin-bottom:var(--space-6);letter-spacing:0.08em}
+.hero h1{font-family:var(--font-mono);font-size:clamp(2rem,5vw,3.5rem);font-weight:700;line-height:1.1;color:var(--text);margin-bottom:var(--space-4)}
+.hero h1 .accent{color:var(--green);text-shadow:0 0 30px rgba(0,255,136,0.4)}
+.hero-sub{font-size:1rem;color:var(--text-muted);max-width:60ch;margin:0 auto var(--space-8);line-height:1.7}
+.hero-stats{display:flex;justify-content:center;gap:var(--space-8);flex-wrap:wrap;margin-bottom:var(--space-8)}
+.stat{text-align:center}
+.stat-num{font-family:var(--font-mono);font-size:1.8rem;font-weight:700;color:var(--green);display:block}
+.stat-label{font-size:0.78rem;color:var(--text-muted);letter-spacing:0.06em;text-transform:uppercase}
+
+/* MAIN LAYOUT */
+main{max-width:1280px;margin:0 auto;padding:0 var(--space-6) var(--space-16)}
+
+/* SECTION TITLES */
+.section-header{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-6)}
+.section-title{font-family:var(--font-mono);font-size:0.85rem;color:var(--green);letter-spacing:0.1em;text-transform:uppercase;font-weight:700}
+.section-line{flex:1;height:1px;background:linear-gradient(to right,var(--border-strong),transparent)}
+.section-desc{font-size:0.9rem;color:var(--text-muted);margin-bottom:var(--space-6);max-width:72ch}
+
+/* TAB NAV */
+.tab-nav{display:flex;gap:0;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:4px;margin-bottom:var(--space-8);overflow-x:auto;scrollbar-width:none}
+.tab-nav::-webkit-scrollbar{display:none}
+.tab-btn{flex:1;min-width:fit-content;padding:var(--space-2) var(--space-4);border-radius:var(--radius-md);font-family:var(--font-mono);font-size:0.78rem;font-weight:500;color:var(--text-muted);transition:all 180ms ease;white-space:nowrap;letter-spacing:0.03em;display:flex;align-items:center;gap:6px}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{background:var(--surface-3);color:var(--green);box-shadow:var(--shadow-card);border:1px solid var(--border-strong)}
+.tab-count{background:rgba(0,255,136,0.12);border:1px solid rgba(0,255,136,0.2);border-radius:var(--radius-sm);padding:1px 6px;font-size:0.65rem;color:var(--green)}
+
+/* TAB PANELS */
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* DORK CARDS */
+.dork-grid{display:grid;grid-template-columns:1fr;gap:var(--space-4)}
+.dork-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-4) var(--space-5);transition:all 220ms ease;position:relative;overflow:hidden}
+.dork-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--green);opacity:0;transition:opacity 220ms}
+.dork-card:hover{border-color:var(--border-strong);box-shadow:var(--shadow-glow)}
+.dork-card:hover::before{opacity:1}
+.dork-top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-3);margin-bottom:var(--space-3)}
+.dork-meta{flex:1}
+.dork-label{font-size:0.78rem;font-weight:600;color:var(--text);margin-bottom:2px}
+.dork-category{display:inline-block;font-family:var(--font-mono);font-size:0.65rem;color:var(--text-muted);background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1px 8px;letter-spacing:0.05em;text-transform:uppercase}
+.dork-query{font-family:var(--font-mono);font-size:0.8rem;color:var(--cyan);background:rgba(0,229,255,0.04);border:1px solid rgba(0,229,255,0.12);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);word-break:break-all;line-height:1.6;position:relative;margin-bottom:var(--space-3)}
+.dork-query .op{color:var(--green);font-weight:700}
+.dork-query .val{color:var(--yellow)}
+.dork-query .str{color:var(--orange)}
+.dork-actions{display:flex;gap:var(--space-2);flex-wrap:wrap}
+.btn-search{display:inline-flex;align-items:center;gap:6px;background:rgba(0,255,136,0.08);border:1px solid var(--border-strong);border-radius:var(--radius-md);padding:6px 14px;font-family:var(--font-mono);font-size:0.75rem;font-weight:600;color:var(--green);transition:all 180ms ease;letter-spacing:0.03em}
+.btn-search:hover{background:rgba(0,255,136,0.16);box-shadow:var(--shadow-glow)}
+.btn-copy{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--border);border-radius:var(--radius-md);padding:6px 12px;font-family:var(--font-mono);font-size:0.75rem;color:var(--text-muted);transition:all 180ms ease}
+.btn-copy:hover{border-color:var(--border-strong);color:var(--text)}
+.btn-copy.copied{color:var(--green);border-color:var(--border-strong)}
+
+/* DORK BUILDER */
+.builder-box{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:var(--space-6);margin-bottom:var(--space-8)}
+.builder-title{font-family:var(--font-mono);font-size:0.8rem;color:var(--green);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:var(--space-4);display:flex;align-items:center;gap:var(--space-2)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-4)}
+@media(max-width:640px){.form-row{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:var(--space-2)}
+.form-label{font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);letter-spacing:0.06em;text-transform:uppercase}
+.form-select,.form-input{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3);font-family:var(--font-mono);font-size:0.82rem;color:var(--text);appearance:none;-webkit-appearance:none;transition:border-color 180ms}
+.form-select:focus,.form-input:focus{outline:none;border-color:var(--green)}
+.form-select option{background:var(--surface-2)}
+.preview-box{background:var(--surface-3);border:1px solid rgba(0,229,255,0.15);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);font-family:var(--font-mono);font-size:0.82rem;color:var(--cyan);word-break:break-all;margin-bottom:var(--space-4);min-height:52px;line-height:1.6}
+.builder-btns{display:flex;gap:var(--space-3);flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#000;border-radius:var(--radius-md);padding:10px 24px;font-family:var(--font-mono);font-size:0.82rem;font-weight:700;transition:all 180ms ease;letter-spacing:0.04em}
+.btn-primary:hover{background:#00cc6a;box-shadow:0 0 20px rgba(0,255,136,0.3)}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 20px;font-family:var(--font-mono);font-size:0.82rem;transition:all 180ms ease}
+.btn-secondary:hover{border-color:var(--border-strong);color:var(--text)}
+
+/* URL LIST TABLE */
+.url-table-wrap{overflow-x:auto;border-radius:var(--radius-lg);border:1px solid var(--border)}
+.url-table{width:100%;border-collapse:collapse;font-size:0.83rem}
+.url-table thead tr{background:var(--surface-2)}
+.url-table th{font-family:var(--font-mono);font-size:0.68rem;font-weight:700;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;padding:var(--space-3) var(--space-4);text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+.url-table tbody tr{border-bottom:1px solid var(--border);transition:background 150ms}
+.url-table tbody tr:last-child{border-bottom:none}
+.url-table tbody tr:hover{background:var(--surface-2)}
+.url-table td{padding:var(--space-3) var(--space-4);vertical-align:top}
+.job-title-cell{font-weight:600;color:var(--text);min-width:200px}
+.job-company{font-size:0.75rem;color:var(--text-muted);margin-top:2px;font-family:var(--font-mono)}
+.badge{display:inline-block;font-family:var(--font-mono);font-size:0.65rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;border-radius:var(--radius-sm);padding:2px 8px;white-space:nowrap}
+.badge-pentest{background:rgba(255,69,96,0.1);color:var(--red);border:1px solid rgba(255,69,96,0.25)}
+.badge-appsec{background:rgba(0,229,255,0.08);color:var(--cyan);border:1px solid rgba(0,229,255,0.2)}
+.badge-infosec{background:rgba(0,255,136,0.08);color:var(--green);border:1px solid var(--border-strong)}
+.badge-cloudsec{background:rgba(255,159,28,0.08);color:var(--orange);border:1px solid rgba(255,159,28,0.25)}
+.badge-intern{background:rgba(255,214,0,0.08);color:var(--yellow);border:1px solid rgba(255,214,0,0.25)}
+.badge-redteam{background:rgba(255,69,96,0.1);color:var(--red);border:1px solid rgba(255,69,96,0.25)}
+.platform-tag{font-family:var(--font-mono);font-size:0.7rem;color:var(--text-faint);background:var(--surface-3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1px 8px;white-space:nowrap}
+.url-link{display:inline-flex;align-items:center;gap:4px;color:var(--green);font-family:var(--font-mono);font-size:0.72rem;transition:all 150ms;word-break:break-all}
+.url-link:hover{color:#00ffaa;text-decoration:underline}
+.location-cell{font-size:0.78rem;color:var(--text-muted);white-space:nowrap}
+
+/* DORK REFERENCE */
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-4)}
+.ref-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-4)}
+.ref-op{font-family:var(--font-mono);font-size:1rem;font-weight:700;color:var(--cyan);margin-bottom:4px}
+.ref-desc{font-size:0.82rem;color:var(--text-muted);margin-bottom:var(--space-3)}
+.ref-example{font-family:var(--font-mono);font-size:0.72rem;color:var(--text-faint);background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:var(--space-2) var(--space-3);line-height:1.5}
+.ref-example .ex-op{color:var(--green)}
+.ref-example .ex-val{color:var(--yellow)}
+
+/* SEARCH BAR */
+.search-bar{display:flex;gap:var(--space-3);margin-bottom:var(--space-3);flex-wrap:wrap}
+.search-input{flex:1;min-width:160px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-2) var(--space-4);font-family:var(--font-body);font-size:0.9rem;color:var(--text);transition:border-color 180ms}
+.search-input::placeholder{color:var(--text-faint)}
+.search-input:focus{outline:none;border-color:var(--green)}
+.filter-select{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3);font-family:var(--font-mono);font-size:0.78rem;color:var(--text-muted);appearance:none;min-width:120px;transition:border-color 180ms}
+.filter-select:focus{outline:none;border-color:var(--green)}
+.filter-select option{background:var(--surface-2)}
+.btn-fetch-live{display:inline-flex;align-items:center;gap:6px;background:rgba(0,255,136,0.08);border:1px solid var(--border-strong);border-radius:var(--radius-md);padding:var(--space-2) var(--space-4);font-family:var(--font-mono);font-size:0.75rem;font-weight:600;color:var(--green);transition:all 180ms ease;white-space:nowrap;letter-spacing:0.03em}
+.btn-fetch-live:hover{background:rgba(0,255,136,0.16);box-shadow:var(--shadow-glow)}
+.btn-fetch-live:disabled{opacity:0.5;cursor:not-allowed}
+.btn-fetch-live.loading svg{animation:spin 1s linear infinite}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.live-status{font-family:var(--font-mono);font-size:0.72rem;color:var(--text-faint);margin-bottom:var(--space-4);min-height:1.4em;display:flex;align-items:center;gap:var(--space-2)}
+.live-status.ok{color:var(--green)}
+.live-status.err{color:var(--red)}
+.live-status.loading{color:var(--text-muted)}
+.badge-live{display:inline-block;font-family:var(--font-mono);font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;border-radius:var(--radius-sm);padding:1px 5px;background:rgba(0,255,136,0.12);color:var(--green);border:1px solid rgba(0,255,136,0.3);margin-left:4px;vertical-align:middle}
+.quick-search-bar{display:flex;align-items:center;gap:var(--space-2);flex-wrap:wrap;margin-bottom:var(--space-4);padding:var(--space-3) var(--space-4);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md)}
+.quick-search-label{font-family:var(--font-mono);font-size:0.68rem;color:var(--text-faint);letter-spacing:0.08em;text-transform:uppercase;margin-right:var(--space-1);white-space:nowrap}
+.btn-platform{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:0.72rem;font-weight:600;letter-spacing:0.03em;border:1px solid var(--border);color:var(--text-muted);transition:all 160ms ease;white-space:nowrap}
+.btn-platform:hover{color:var(--text);border-color:var(--border-strong)}
+.btn-linkedin:hover{color:#0a66c2;border-color:rgba(10,102,194,0.4);background:rgba(10,102,194,0.06)}
+.btn-indeed:hover{color:#2164f3;border-color:rgba(33,100,243,0.4);background:rgba(33,100,243,0.06)}
+.btn-naukri:hover{color:#ff7555;border-color:rgba(255,117,85,0.4);background:rgba(255,117,85,0.06)}
+.btn-wwr:hover{color:var(--cyan);border-color:rgba(0,229,255,0.3);background:rgba(0,229,255,0.05)}
+.btn-remoteok:hover{color:var(--green);border-color:var(--border-strong);background:rgba(0,255,136,0.05)}
+
+/* DISCLAIMER BANNER */
+.disclaimer{background:rgba(255,214,0,0.04);border:1px solid rgba(255,214,0,0.2);border-radius:var(--radius-lg);padding:var(--space-4) var(--space-5);display:flex;align-items:flex-start;gap:var(--space-3);margin-bottom:var(--space-8)}
+.disclaimer-icon{font-size:1.2rem;flex-shrink:0;margin-top:2px}
+.disclaimer-text{font-size:0.82rem;color:var(--text-muted);line-height:1.6}
+.disclaimer-text strong{color:var(--yellow)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:var(--space-6);text-align:center;font-family:var(--font-mono);font-size:0.72rem;color:var(--text-faint);letter-spacing:0.04em}
+footer span{color:var(--green)}
+
+/* LIGHT MODE */
+[data-theme="light"]{
+  --bg:#f4f6f4;
+  --surface:#ffffff;
+  --surface-2:#f0f3f0;
+  --surface-3:#e8ede8;
+  --border:rgba(0,120,60,0.15);
+  --border-strong:rgba(0,120,60,0.3);
+  --text:#1a2e22;
+  --text-muted:#4a7060;
+  --text-faint:#9abba0;
+  --green:#007a40;
+  --green-dim:#005c30;
+  --cyan:#006688;
+  --red:#c0002a;
+  --yellow:#8a6000;
+  --orange:#8a4000;
+  --shadow-glow:0 0 20px rgba(0,120,60,0.1);
+  --shadow-card:0 2px 8px rgba(0,0,0,0.08)
+}
+[data-theme="light"] body::before{background:none}
+[data-theme="light"] .dork-query{background:rgba(0,100,136,0.04);border-color:rgba(0,100,136,0.15)}
+[data-theme="light"] .badge-pentest{background:rgba(192,0,42,0.07)}
+[data-theme="light"] .badge-appsec{background:rgba(0,100,136,0.07)}
+[data-theme="light"] .badge-infosec{background:rgba(0,122,64,0.07)}
+[data-theme="light"] .badge-intern{background:rgba(138,96,0,0.07)}
+[data-theme="light"] .ref-example{background:var(--surface-2)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .hero{padding:var(--space-8) var(--space-4) var(--space-6)}
+  main{padding:0 var(--space-4) var(--space-12)}
+  .hero-stats{gap:var(--space-4)}
+  .url-table{font-size:0.76rem}
+  .url-table th,.url-table td{padding:var(--space-2) var(--space-3)}
+  .search-bar{flex-direction:column}
+}
+
+/* ANIMATIONS */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.dork-card,.ref-card{animation:fadeInUp 0.4s ease both}
+.dork-card:nth-child(1){animation-delay:0.05s}
+.dork-card:nth-child(2){animation-delay:0.10s}
+.dork-card:nth-child(3){animation-delay:0.15s}
+.dork-card:nth-child(4){animation-delay:0.20s}
+.dork-card:nth-child(5){animation-delay:0.25s}
+.dork-card:nth-child(6){animation-delay:0.30s}
+.dork-card:nth-child(7){animation-delay:0.35s}
+.dork-card:nth-child(8){animation-delay:0.40s}
+
+.terminal-cursor{display:inline-block;width:10px;height:1.1em;background:var(--green);animation:blink 1s step-end infinite;vertical-align:text-bottom;margin-left:2px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* COPY TOAST */
+.toast{position:fixed;bottom:var(--space-6);right:var(--space-6);background:var(--surface-3);border:1px solid var(--border-strong);border-radius:var(--radius-md);padding:var(--space-2) var(--space-4);font-family:var(--font-mono);font-size:0.78rem;color:var(--green);transform:translateY(80px);opacity:0;transition:all 300ms ease;z-index:9999;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Copied to clipboard</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Cyber Dork Hunter Logo">
+          <rect width="36" height="36" rx="8" fill="rgba(0,255,136,0.08)" stroke="rgba(0,255,136,0.25)" stroke-width="1"/>
+          <path d="M8 18L14 12L18 16L22 10L28 18" stroke="#00ff88" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="18" cy="22" r="4" stroke="#00ff88" stroke-width="1.5"/>
+          <path d="M21.8 25.8L26 30" stroke="#00ff88" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="18" cy="22" r="1.5" fill="#00ff88"/>
+        </svg>
+      </div>
+      <span class="logo-text">Cyber<span>Dork</span>Hunter</span>
+    </div>
+    <div class="header-actions">
+      <div class="status-pill">LIVE · 2026</div>
+      <button class="btn-theme" data-theme-toggle aria-label="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5"/></svg>
+    GOOGLE DORKING · CAREER INTELLIGENCE
+  </div>
+  <h1>Hunt <span class="accent">Cybersecurity</span> Jobs<br>with Precision Dorks<span class="terminal-cursor"></span></h1>
+  <p class="hero-sub">Pre-crafted Google dork queries to surface career pages with openings in penetration testing, red teaming, application security, and cybersecurity engineering.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">40+</span><span class="stat-label">Dork Queries</span></div>
+    <div class="stat"><span class="stat-num">20+</span><span class="stat-label">Live URLs</span></div>
+    <div class="stat"><span class="stat-num">6</span><span class="stat-label">Job Boards</span></div>
+    <div class="stat"><span class="stat-num">5</span><span class="stat-label">Specialisations</span></div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    <div class="disclaimer-icon">⚠️</div>
+    <div class="disclaimer-text"><strong>Ethical Use Only.</strong> Google Dorking for job hunting is completely legal and ethical. These queries use standard Google search operators to locate publicly available career pages. Never use dorking techniques to access non-public data, private systems, or confidential information. Always verify job listings on the official company website before applying.</div>
+  </div>
+
+  <!-- TABS -->
+  <nav class="tab-nav" role="tablist" aria-label="Main sections">
+    <button class="tab-btn active" role="tab" aria-selected="true" data-tab="dorks">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Dork Queries <span class="tab-count">40+</span>
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="urls">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      Live URLs <span class="tab-count">20+</span>
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="builder">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Dork Builder
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="reference">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      Operator Reference
+    </button>
+  </nav>
+
+  <!-- TAB: DORK QUERIES -->
+  <div id="tab-dorks" class="tab-panel active">
+    <div class="section-header">
+      <span class="section-title">// Dork Arsenal</span>
+      <div class="section-line"></div>
+    </div>
+    <p class="section-desc">Click "Launch in Google" to run any query directly. Click "Copy" to grab the raw query string. Queries are grouped by platform and specialisation.</p>
+
+    <div class="dork-grid" id="dorkGrid">
+      <!-- Cards injected by JS -->
+    </div>
+  </div>
+
+  <!-- TAB: LIVE URLS -->
+  <div id="tab-urls" class="tab-panel">
+    <div class="section-header">
+      <span class="section-title">// Discovered Career Pages</span>
+      <div class="section-line"></div>
+    </div>
+    <p class="section-desc">Real job listings and career pages found via Google dorking. Sorted by relevance. Click any URL to visit the live page.</p>
+    <div class="search-bar">
+      <input class="search-input" type="text" placeholder="Filter by title, company, platform…" id="urlSearch" aria-label="Search job listings">
+      <select class="filter-select" id="roleFilter" aria-label="Filter by role type">
+        <option value="">All Roles</option>
+        <option value="pentest">Penetration Testing</option>
+        <option value="appsec">App Security</option>
+        <option value="infosec">InfoSec</option>
+        <option value="cloudsec">Cloud Security</option>
+        <option value="redteam">Red Team</option>
+        <option value="intern">Internship</option>
+      </select>
+      <select class="filter-select" id="platformFilter" aria-label="Filter by platform">
+        <option value="">All Platforms</option>
+        <option value="Lever">Lever</option>
+        <option value="Greenhouse">Greenhouse</option>
+        <option value="Ashby">Ashby</option>
+        <option value="Direct">Direct</option>
+        <option value="RemoteOK">RemoteOK</option>
+        <option value="Remotive">Remotive</option>
+      </select>
+      <button class="btn-fetch-live" id="fetchLiveBtn" onclick="fetchLiveJobs()" title="Pull real-time listings from Lever &amp; Greenhouse APIs">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Fetch Live
+      </button>
+    </div>
+    <div class="live-status" id="liveStatus"></div>
+    <div class="quick-search-bar">
+      <span class="quick-search-label">Open Search:</span>
+      <button class="btn-platform btn-linkedin" onclick="openSearch('linkedin')" title="LinkedIn cybersecurity jobs (Remote)">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        LinkedIn
+      </button>
+      <button class="btn-platform btn-indeed" onclick="openSearch('indeed')" title="Indeed remote security jobs">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Indeed
+      </button>
+      <button class="btn-platform btn-naukri" onclick="openSearch('naukri')" title="Naukri cybersecurity / VAPT jobs (India)">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Naukri
+      </button>
+      <button class="btn-platform btn-wwr" onclick="openSearch('wwr')" title="We Work Remotely security jobs">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        We Work Remotely
+      </button>
+      <button class="btn-platform btn-remoteok" onclick="openSearch('remoteok')" title="RemoteOK security jobs website">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        RemoteOK
+      </button>
+    </div>
+    <div class="url-table-wrap">
+      <table class="url-table" id="urlTable">
+        <thead>
+          <tr>
+            <th>Job Title / Company</th>
+            <th>Specialisation</th>
+            <th>Platform</th>
+            <th>Location</th>
+            <th>Career URL</th>
+          </tr>
+        </thead>
+        <tbody id="urlTableBody">
+          <!-- rows injected by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: DORK BUILDER -->
+  <div id="tab-builder" class="tab-panel">
+    <div class="section-header">
+      <span class="section-title">// Custom Dork Builder</span>
+      <div class="section-line"></div>
+    </div>
+    <p class="section-desc">Build a custom Google dork query by selecting operators and values. The query preview updates in real time.</p>
+    <div class="builder-box">
+      <div class="builder-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        DORK CONFIGURATION
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="b_platform">Target Platform</label>
+          <select class="form-select" id="b_platform">
+            <option value="">Any platform</option>
+            <option value="site:jobs.lever.co">Lever (site:jobs.lever.co)</option>
+            <option value="site:job-boards.greenhouse.io">Greenhouse (site:greenhouse.io)</option>
+            <option value="site:jobs.ashbyhq.com">Ashby HQ (site:ashbyhq.com)</option>
+            <option value="site:boards.eu.greenhouse.io">Greenhouse EU</option>
+            <option value="site:recruitee.com">Recruitee</option>
+            <option value="site:workable.com">Workable</option>
+            <option value="site:smartrecruiters.com">SmartRecruiters</option>
+            <option value="site:linkedin.com/jobs">LinkedIn Jobs</option>
+            <option value="inurl:careers">Any site (inurl:careers)</option>
+            <option value="inurl:jobs">Any site (inurl:jobs)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="b_role">Job Role</label>
+          <select class="form-select" id="b_role">
+            <option value='"cybersecurity"'>Cybersecurity (general)</option>
+            <option value='"penetration testing"'>Penetration Testing</option>
+            <option value='"penetration tester"'>Penetration Tester</option>
+            <option value='"red team"'>Red Team</option>
+            <option value='"offensive security"'>Offensive Security</option>
+            <option value='"application security"'>Application Security</option>
+            <option value='"security engineer"'>Security Engineer</option>
+            <option value='"security analyst"'>Security Analyst</option>
+            <option value='"SOC analyst"'>SOC Analyst</option>
+            <option value='"cloud security"'>Cloud Security</option>
+            <option value='"information security"'>Information Security</option>
+            <option value='"vulnerability assessment"'>Vulnerability Assessment</option>
+            <option value='"threat intelligence"'>Threat Intelligence</option>
+            <option value='"OSCP" OR "CEH" OR "CISSP"'>OSCP / CEH / CISSP Certified</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="b_location">Location Filter</label>
+          <select class="form-select" id="b_location">
+            <option value="">No location filter</option>
+            <option value='"remote"'>"remote"</option>
+            <option value='"India"'>"India"</option>
+            <option value='"United States"'>"United States"</option>
+            <option value='"United Kingdom"'>"United Kingdom"</option>
+            <option value='"Germany"'>"Germany"</option>
+            <option value='"Singapore"'>"Singapore"</option>
+            <option value='"Canada"'>"Canada"</option>
+            <option value='"hybrid"'>"hybrid"</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="b_extra">Extra Keyword</label>
+          <input class="form-input" type="text" id="b_extra" placeholder='e.g. "OSCP" or "bug bounty"'>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="b_after">Posted After (date)</label>
+          <input class="form-input" type="date" id="b_after" value="2025-01-01">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="b_filetype">File Type</label>
+          <select class="form-select" id="b_filetype">
+            <option value="">None</option>
+            <option value="filetype:pdf">PDF (job postings PDFs)</option>
+            <option value="filetype:html">HTML pages</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-label" style="margin-bottom:8px">QUERY PREVIEW</div>
+      <div class="preview-box" id="dorkPreview">—</div>
+      <div class="builder-btns">
+        <button class="btn-primary" id="launchBuilt">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Launch in Google
+        </button>
+        <button class="btn-secondary" id="copyBuilt">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy Query
+        </button>
+        <button class="btn-secondary" id="resetBuilder">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- QUICK RECIPES -->
+    <div class="section-header" style="margin-top:var(--space-8)">
+      <span class="section-title">// Quick Recipes</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="dork-grid" id="recipeGrid"></div>
+  </div>
+
+  <!-- TAB: OPERATOR REFERENCE -->
+  <div id="tab-reference" class="tab-panel">
+    <div class="section-header">
+      <span class="section-title">// Google Dork Operator Reference</span>
+      <div class="section-line"></div>
+    </div>
+    <p class="section-desc">Master these operators to craft your own high-precision job dorks. Combine multiple operators in a single query for best results.</p>
+    <div class="ref-grid" id="refGrid"></div>
+  </div>
+
+</main>
+
+<footer>
+  <span>CyberDorkHunter</span> · Built for ethical job hunting only · 2026 · Google Dorking for career intelligence
+</footer>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const DORKS = [
+  // LEVER
+  {label:'Pentest Jobs on Lever',category:'Lever · Penetration Testing',
+   parts:['site:jobs.lever.co','("penetration testing" OR "penetration tester" OR "pentester")']},
+  {label:'Red Team Roles on Lever',category:'Lever · Red Team',
+   parts:['site:jobs.lever.co','("red team" OR "red teamer" OR "offensive security")']},
+  {label:'Application Security on Lever',category:'Lever · AppSec',
+   parts:['site:jobs.lever.co','("application security" OR "appsec" OR "secure code review")']},
+  {label:'Security Engineer (Remote) on Lever',category:'Lever · Security Engineering',
+   parts:['site:jobs.lever.co','"security engineer"','"remote"']},
+  {label:'Cloud Security on Lever',category:'Lever · Cloud Security',
+   parts:['site:jobs.lever.co','("cloud security" OR "AWS security" OR "GCP security")']},
+
+  // GREENHOUSE
+  {label:'Pentest / Offensive Sec on Greenhouse',category:'Greenhouse · Penetration Testing',
+   parts:['site:job-boards.greenhouse.io','("penetration testing" OR "red team" OR "offensive security")']},
+  {label:'Cybersecurity Intern on Greenhouse',category:'Greenhouse · Internship',
+   parts:['site:job-boards.greenhouse.io','("cybersecurity" OR "security intern") "2026"']},
+  {label:'SOC / Threat Intel on Greenhouse',category:'Greenhouse · SOC / Threat Intel',
+   parts:['site:job-boards.greenhouse.io','("SOC analyst" OR "threat intelligence" OR "incident response")']},
+  {label:'AppSec / DAST / SAST on Greenhouse',category:'Greenhouse · AppSec',
+   parts:['site:job-boards.greenhouse.io','("application security" OR "SAST" OR "DAST" OR "OWASP")']},
+  {label:'OSCP / CEH Certified Roles on Greenhouse',category:'Greenhouse · Certified',
+   parts:['site:job-boards.greenhouse.io','("OSCP" OR "CEH" OR "CISSP" OR "GPEN")']},
+
+  // ASHBY
+  {label:'Cybersecurity Startup Jobs on Ashby',category:'Ashby · Cybersecurity',
+   parts:['site:jobs.ashbyhq.com','("cybersecurity" OR "security engineer" OR "pentest")']},
+  {label:'AppSec / Bug Bounty on Ashby',category:'Ashby · AppSec',
+   parts:['site:jobs.ashbyhq.com','("application security" OR "bug bounty" OR "vulnerability")']},
+
+  // DIRECT CAREER PAGES
+  {label:'Cybersecurity Jobs on Any Career Page',category:'Any Site · Cybersecurity',
+   parts:['inurl:careers','("cybersecurity" OR "cyber security")','intitle:"job" OR intitle:"careers"']},
+  {label:'Pentest Jobs on Company Career Pages',category:'Any Site · Penetration Testing',
+   parts:['inurl:careers','"penetration testing"']},
+  {label:'Red Team Jobs on Company Career Pages',category:'Any Site · Red Team',
+   parts:['inurl:careers','"red team" OR "offensive security"']},
+  {label:'Security Jobs — inurl:jobs variant',category:'Any Site · inurl:jobs',
+   parts:['inurl:jobs','"penetration tester" OR "cybersecurity engineer"']},
+  {label:'Bug Bounty / Vuln Research Jobs',category:'Any Site · Vulnerability Research',
+   parts:['inurl:careers','("bug bounty" OR "vulnerability research" OR "vuln researcher")']},
+  {label:'Malware / Reverse Engineering Roles',category:'Any Site · Malware/RevEng',
+   parts:['inurl:careers','("malware analyst" OR "reverse engineer" OR "threat research")']},
+
+  // LINKEDIN
+  {label:'Pentesting Jobs on LinkedIn',category:'LinkedIn · Penetration Testing',
+   parts:['site:linkedin.com/jobs','("penetration testing" OR "penetration tester")']},
+  {label:'Cybersecurity Jobs on LinkedIn',category:'LinkedIn · Cybersecurity',
+   parts:['site:linkedin.com/jobs','"cybersecurity" OR "cyber security"','"remote"']},
+  {label:'OSCP Jobs on LinkedIn',category:'LinkedIn · Certified Pentest',
+   parts:['site:linkedin.com/jobs','"OSCP" OR "OSWE" OR "OSCE"']},
+
+  // WELL-KNOWN SECURITY COMPANIES
+  {label:'CrowdStrike Career Openings',category:'Direct · CrowdStrike',
+   parts:['site:crowdstrike.com','inurl:careers','("security" OR "penetration")']},
+  {label:'Palo Alto Networks Security Jobs',category:'Direct · Palo Alto Networks',
+   parts:['site:paloaltonetworks.com','inurl:jobs','("security" OR "red team" OR "threat")']},
+  {label:'Rapid7 Security Jobs',category:'Direct · Rapid7',
+   parts:['site:rapid7.com','inurl:careers','("security" OR "pentest" OR "metasploit")']},
+  {label:'Tenable Security Jobs',category:'Direct · Tenable',
+   parts:['site:tenable.com','inurl:careers','"security"']},
+  {label:'Offensive Security (OFFSEC) Jobs',category:'Direct · OffSec',
+   parts:['site:offsec.com','inurl:careers']},
+  {label:'HackerOne Jobs',category:'Direct · HackerOne',
+   parts:['site:hackerone.com','inurl:careers']},
+  {label:'Bugcrowd Jobs',category:'Direct · Bugcrowd',
+   parts:['site:bugcrowd.com','inurl:careers']},
+  {label:'NCC Group Security Careers',category:'Direct · NCC Group',
+   parts:['site:nccgroup.com','inurl:careers']},
+
+  // PDF JOB POSTINGS
+  {label:'Pentest Job Postings (PDF)',category:'PDF · Penetration Testing',
+   parts:['filetype:pdf','"penetration tester" OR "penetration testing"','"we are hiring" OR "job opening"']},
+  {label:'Cybersecurity Job Openings (PDF)',category:'PDF · Cybersecurity',
+   parts:['filetype:pdf','"cybersecurity engineer" OR "security analyst"','"apply" OR "open position"']},
+
+  // DATE-FILTERED
+  {label:'Recent Pentest Jobs (2026)',category:'Dated · Penetration Testing',
+   parts:['site:jobs.lever.co OR site:job-boards.greenhouse.io','("penetration testing" OR "red team")','after:2026-01-01']},
+  {label:'Recent AppSec Jobs (2026)',category:'Dated · AppSec',
+   parts:['site:jobs.lever.co OR site:job-boards.greenhouse.io','"application security"','after:2026-01-01']},
+
+  // INDIA-SPECIFIC
+  {label:'Cybersecurity Jobs in India',category:'India · Cybersecurity',
+   parts:['inurl:careers','("cybersecurity" OR "penetration testing")','("India" OR "Bangalore" OR "Pune" OR "Hyderabad" OR "Delhi")']},
+  {label:'InfoSec Jobs in India on LinkedIn',category:'India · InfoSec',
+   parts:['site:linkedin.com/jobs','"information security" OR "cybersecurity"','"India"']},
+  {label:'VAPT Jobs in India',category:'India · VAPT',
+   parts:['inurl:careers','"VAPT" OR "vulnerability assessment" OR "penetration testing"','"India"']},
+
+  // INTITLE
+  {label:'intitle: Security Jobs',category:'intitle · Security',
+   parts:['intitle:"security engineer" OR intitle:"security analyst" OR intitle:"penetration tester"','inurl:careers OR inurl:jobs']},
+  {label:'intitle: Cybersecurity Openings',category:'intitle · Cybersecurity',
+   parts:['intitle:"cybersecurity"','("hiring" OR "open role" OR "apply now")']},
+];
+
+const URLS = [
+  {title:'Sr. Security Engineer (Penetration Testing)',company:'CertiK',badge:'pentest',badgeLabel:'Pentest',platform:'Lever',location:'US / Remote',url:'https://jobs.lever.co/certik/305d508f-1b1a-4b64-ac41-903b14329764'},
+  {title:'Security Engineer (Pentest – Red Team)',company:'Coins.ph',badge:'redteam',badgeLabel:'Red Team',platform:'Lever',location:'Shenzhen / HK',url:'https://jobs.lever.co/coins/8689f193-d491-4f44-93cb-9303e47c0631'},
+  {title:'Security Engineer (Offensive Security)',company:'Offchain Labs',badge:'pentest',badgeLabel:'Pentest',platform:'Lever',location:'Remote',url:'https://jobs.lever.co/offchainlabs/5dc0b755-8c1f-43c8-b268-df4b372a31d1'},
+  {title:'Application Security Engineer',company:'Palantir Technologies',badge:'appsec',badgeLabel:'AppSec',platform:'Lever',location:'US',url:'https://jobs.lever.co/palantir/ce813413-de04-4a7b-a796-43735f55bf0c'},
+  {title:'Staff Product Security Engineer',company:'Greenlight Financial',badge:'appsec',badgeLabel:'AppSec',platform:'Lever',location:'Remote',url:'https://jobs.lever.co/greenlight/18b7ac30-dbf6-4078-bf50-06772c47fdc7'},
+  {title:'Security Engineer (IAM)',company:'WHOOP',badge:'infosec',badgeLabel:'InfoSec',platform:'Lever',location:'Boston, US',url:'https://jobs.lever.co/whoop/7b4065d5-0cbb-47da-9d1e-3e52d9f75917'},
+  {title:'Security Engineer Intern (Summer 2026)',company:'Cloudflare',badge:'intern',badgeLabel:'Internship',platform:'Greenhouse',location:'Austin, US',url:'https://job-boards.greenhouse.io/cloudflare/jobs/7582150'},
+  {title:'Security Operations Intern (Summer 2026)',company:'Rockstar Games',badge:'intern',badgeLabel:'Internship',platform:'Greenhouse',location:'US',url:'https://job-boards.greenhouse.io/rsgur/jobs/7670946003'},
+  {title:'Security Engineer Intern – Summer 2026',company:'Gallup',badge:'intern',badgeLabel:'Internship',platform:'Greenhouse',location:'US',url:'https://job-boards.greenhouse.io/gallup/jobs/4185955009'},
+  {title:'Technology Internship – Information Security',company:'Point72',badge:'intern',badgeLabel:'Internship',platform:'Greenhouse',location:'Stamford, US',url:'https://job-boards.greenhouse.io/point72/jobs/8355904002'},
+  {title:'Security Engineer (Platform)',company:'Adaptive Security',badge:'infosec',badgeLabel:'InfoSec',platform:'Ashby',location:'Remote',url:'https://jobs.ashbyhq.com/adaptivesecurity'},
+  {title:'Security Engineer',company:'Panopto',badge:'appsec',badgeLabel:'AppSec',platform:'Lever',location:'Remote-US',url:'https://jobs.lever.co/panopto/44c24788-b595-4519-bac1-d06921a2d32d'},
+  // Well-known company career pages
+  {title:'Security & Threat Research Careers',company:'CrowdStrike',badge:'infosec',badgeLabel:'InfoSec',platform:'Direct',location:'Global / Remote',url:'https://www.crowdstrike.com/en-us/careers/'},
+  {title:'Cybersecurity Careers',company:'Palo Alto Networks',badge:'infosec',badgeLabel:'InfoSec',platform:'Direct',location:'Global',url:'https://www.paloaltonetworks.com/company/careers'},
+  {title:'Security Research & Engineering',company:'Rapid7',badge:'pentest',badgeLabel:'Pentest',platform:'Direct',location:'Global / Remote',url:'https://www.rapid7.com/company/careers/'},
+  {title:'Vulnerability Research & Security Jobs',company:'Tenable',badge:'infosec',badgeLabel:'InfoSec',platform:'Direct',location:'Global',url:'https://www.tenable.com/careers'},
+  {title:'Offensive Security Careers',company:'OffSec (OSCP)',badge:'pentest',badgeLabel:'Pentest',platform:'Direct',location:'Remote',url:'https://www.offsec.com/company/careers/'},
+  {title:'Security Platform Jobs',company:'HackerOne',badge:'appsec',badgeLabel:'AppSec',platform:'Direct',location:'Remote',url:'https://www.hackerone.com/company/careers'},
+  {title:'Security Research Jobs',company:'Bugcrowd',badge:'appsec',badgeLabel:'AppSec',platform:'Direct',location:'Remote',url:'https://www.bugcrowd.com/about/careers/'},
+  {title:'Penetration Testing & Consulting',company:'NCC Group',badge:'pentest',badgeLabel:'Pentest',platform:'Direct',location:'Global',url:'https://www.nccgroup.com/us/about-us/careers/'},
+  {title:'Red Team & Security Research',company:'Bishop Fox',badge:'redteam',badgeLabel:'Red Team',platform:'Direct',location:'Remote',url:'https://bishopfox.com/careers'},
+  {title:'Security Consulting Careers',company:'Mandiant (Google Cloud)',badge:'infosec',badgeLabel:'InfoSec',platform:'Direct',location:'Global',url:'https://www.mandiant.com/company/careers'},
+];
+
+const RECIPES = [
+  {label:'OSCP Certified Roles – Remote',category:'Recipe · Certified Remote',
+   parts:['site:jobs.lever.co OR site:job-boards.greenhouse.io','"OSCP" OR "OSCE" OR "OSWE"','"remote"']},
+  {label:'Bug Bounty / VDP Jobs – 2026',category:'Recipe · Bug Bounty',
+   parts:['inurl:careers','("bug bounty" OR "VDP" OR "vulnerability disclosure")','after:2026-01-01']},
+  {label:'Hire VAPT / Ethical Hacker – India',category:'Recipe · India VAPT',
+   parts:['inurl:careers','"VAPT" OR "ethical hacker"','"India" OR "Bengaluru" OR "Pune"']},
+  {label:'CTF Player / Reverse Engineer',category:'Recipe · CTF / RevEng',
+   parts:['site:jobs.lever.co OR site:job-boards.greenhouse.io','("CTF" OR "reverse engineer" OR "malware analyst")']},
+  {label:'Cloud SecOps / DevSecOps',category:'Recipe · DevSecOps',
+   parts:['site:jobs.lever.co OR site:job-boards.greenhouse.io','"DevSecOps" OR "cloud security" OR "security DevOps"']},
+  {label:'Threat Intelligence Analyst',category:'Recipe · Threat Intel',
+   parts:['site:jobs.lever.co OR site:job-boards.greenhouse.io','"threat intelligence" OR "threat analyst" OR "CTI analyst"']},
+];
+
+const OPERATORS = [
+  {op:'site:',desc:'Restrict results to a specific website or domain.',example:'<span class="ex-op">site:</span><span class="ex-val">jobs.lever.co</span>'},
+  {op:'inurl:',desc:'Search for a keyword within the URL of results.',example:'<span class="ex-op">inurl:</span><span class="ex-val">careers</span>'},
+  {op:'intitle:',desc:'Search for a keyword in the page title.',example:'<span class="ex-op">intitle:</span><span class="ex-val">"security engineer"</span>'},
+  {op:'intext:',desc:'Search for a keyword within the body of the page.',example:'<span class="ex-op">intext:</span><span class="ex-val">"open positions"</span>'},
+  {op:'"exact phrase"',desc:'Match an exact phrase. Wrap the phrase in double quotes.',example:'<span class="ex-val">"penetration testing"</span>'},
+  {op:'OR',desc:'Return results matching either term. Must be uppercase.',example:'<span class="ex-op">site:</span><span class="ex-val">lever.co</span> <span class="ex-op">OR</span> <span class="ex-op">site:</span><span class="ex-val">greenhouse.io</span>'},
+  {op:'AND / space',desc:'Both terms must be present. (Space = AND by default.)',example:'<span class="ex-val">"security engineer"</span> <span class="ex-val">"remote"</span>'},
+  {op:'-term',desc:'Exclude results containing the term.',example:'"security jobs" <span class="ex-op">-</span><span class="ex-val">internship</span>'},
+  {op:'filetype:',desc:'Restrict to a specific file format (pdf, docx, html).',example:'<span class="ex-op">filetype:</span><span class="ex-val">pdf</span> "security analyst"'},
+  {op:'after:',desc:'Show results published after a given date (YYYY-MM-DD).',example:'<span class="ex-op">after:</span><span class="ex-val">2026-01-01</span>'},
+  {op:'before:',desc:'Show results published before a given date.',example:'<span class="ex-op">before:</span><span class="ex-val">2026-06-01</span>'},
+  {op:'( ) grouping',desc:'Group OR operators together with parentheses.',example:'(<span class="ex-val">"pentest"</span> <span class="ex-op">OR</span> <span class="ex-val">"red team"</span>)'},
+  {op:'*',desc:'Wildcard — matches any single word in a phrase.',example:'"security * engineer"'},
+  {op:'cache:',desc:'View Google\'s cached version of a page.',example:'<span class="ex-op">cache:</span><span class="ex-val">example.com/careers</span>'},
+];
+
+// ─── RENDER DORK CARDS ───────────────────────────────────────────────────────
+function buildQuery(parts){return parts.join(' ');}
+function encodeGoogle(q){return 'https://www.google.com/search?q='+encodeURIComponent(q);}
+
+function renderDorkCard(d){
+  const q = buildQuery(d.parts);
+  const display = q.replace(/(site:|inurl:|intitle:|intext:|filetype:|after:|before:)/g,'<span class="op">$1</span>').replace(/"([^"]+)"/g,'"<span class="str">$1</span>"').replace(/\b(OR|AND)\b/g,'<span class="val">$&</span>');
+  return `<div class="dork-card">
+    <div class="dork-top">
+      <div class="dork-meta">
+        <div class="dork-label">${d.label}</div>
+        <span class="dork-category">${d.category}</span>
+      </div>
+    </div>
+    <div class="dork-query">${display}</div>
+    <div class="dork-actions">
+      <button class="btn-search" onclick="launchGoogle(this)" data-q="${q.replace(/"/g,'&quot;')}">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Launch in Google
+      </button>
+      <button class="btn-copy" onclick="copyText(this,'${q.replace(/'/g,"&#39;").replace(/"/g,'&quot;')}')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy
+      </button>
+    </div>
+  </div>`;
+}
+
+document.getElementById('dorkGrid').innerHTML = DORKS.map(renderDorkCard).join('');
+document.getElementById('recipeGrid').innerHTML = RECIPES.map(renderDorkCard).join('');
+
+// ─── RENDER URL TABLE ────────────────────────────────────────────────────────
+let allUrls = [...URLS];
+function renderUrlTable(data){
+  const tbody = document.getElementById('urlTableBody');
+  tbody.innerHTML = data.map(u=>`<tr data-role="${u.badge}" data-platform="${u.platform}">
+    <td class="job-title-cell">${u.title}${u._live?'<span class="badge-live">LIVE</span>':''}<div class="job-company">${u.company}</div></td>
+    <td><span class="badge badge-${u.badge}">${u.badgeLabel}</span></td>
+    <td><span class="platform-tag">${u.platform}</span></td>
+    <td class="location-cell">${u.location}</td>
+    <td><a class="url-link" href="${u.url}" target="_blank" rel="noopener noreferrer">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      View&nbsp;Listing
+    </a></td>
+  </tr>`).join('');
+}
+renderUrlTable(allUrls);
+
+function filterUrls(){
+  const q = document.getElementById('urlSearch').value.toLowerCase();
+  const role = document.getElementById('roleFilter').value;
+  const plat = document.getElementById('platformFilter').value;
+  const filtered = allUrls.filter(u=>{
+    const matchQ = !q || u.title.toLowerCase().includes(q) || u.company.toLowerCase().includes(q) || u.platform.toLowerCase().includes(q);
+    const matchR = !role || u.badge === role;
+    const matchP = !plat || u.platform === plat;
+    return matchQ && matchR && matchP;
+  });
+  renderUrlTable(filtered);
+}
+document.getElementById('urlSearch').addEventListener('input',filterUrls);
+document.getElementById('roleFilter').addEventListener('change',filterUrls);
+document.getElementById('platformFilter').addEventListener('change',filterUrls);
+
+// ─── RENDER OPERATOR REFERENCE ───────────────────────────────────────────────
+document.getElementById('refGrid').innerHTML = OPERATORS.map(o=>`<div class="ref-card">
+  <div class="ref-op">${o.op}</div>
+  <div class="ref-desc">${o.desc}</div>
+  <div class="ref-example">${o.example}</div>
+</div>`).join('');
+
+// ─── DORK BUILDER ────────────────────────────────────────────────────────────
+function buildCustomQuery(){
+  const parts = [];
+  const plat = document.getElementById('b_platform').value;
+  const role = document.getElementById('b_role').value;
+  const loc = document.getElementById('b_location').value;
+  const extra = document.getElementById('b_extra').value.trim();
+  const after = document.getElementById('b_after').value;
+  const ft = document.getElementById('b_filetype').value;
+  if(ft) parts.push(ft);
+  if(plat) parts.push(plat);
+  if(role) parts.push(role);
+  if(loc) parts.push(loc);
+  if(extra) parts.push(extra.startsWith('"')?extra:'"'+extra+'"');
+  if(after) parts.push('after:'+after);
+  return parts.join(' ') || '(configure options above)';
+}
+function updatePreview(){
+  document.getElementById('dorkPreview').textContent = buildCustomQuery();
+}
+['b_platform','b_role','b_location','b_after','b_filetype'].forEach(id=>{
+  document.getElementById(id).addEventListener('change',updatePreview);
+});
+document.getElementById('b_extra').addEventListener('input',updatePreview);
+updatePreview();
+
+document.getElementById('launchBuilt').addEventListener('click',()=>{
+  const q = buildCustomQuery();
+  if(q && q !== '(configure options above)') window.open(encodeGoogle(q),'_blank','noopener');
+});
+document.getElementById('copyBuilt').addEventListener('click',()=>{
+  const q = buildCustomQuery();
+  copyToClipboard(q);
+  const btn = document.getElementById('copyBuilt');
+  btn.style.color='var(--green)';setTimeout(()=>{btn.style.color='';},2000);
+});
+document.getElementById('resetBuilder').addEventListener('click',()=>{
+  ['b_platform','b_role','b_location','b_filetype'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('b_after').value='2025-01-01';
+  document.getElementById('b_extra').value='';
+  updatePreview();
+});
+
+// ─── ACTIONS ─────────────────────────────────────────────────────────────────
+function launchGoogle(btn){
+  const q = btn.dataset.q;
+  window.open(encodeGoogle(q),'_blank','noopener');
+}
+function copyToClipboard(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{document.execCommand('copy');}catch(e){navigator.clipboard&&navigator.clipboard.writeText(text);}
+  document.body.removeChild(ta);
+  const t = document.getElementById('toast');
+  t.classList.add('show'); clearTimeout(t._t);
+  t._t = setTimeout(()=>t.classList.remove('show'),2400);
+}
+function copyText(btn,q){
+  copyToClipboard(q);
+  btn.classList.add('copied');
+  btn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+  setTimeout(()=>{
+    btn.classList.remove('copied');
+    btn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+  },2000);
+}
+
+// ─── LIVE DATA FETCH ─────────────────────────────────────────────────────────
+const SEC_RE = /pentest|penetration|red.?team|offensive.?sec|appsec|application.?sec|security.?engineer|security.?analyst|information.?security|infosec|cloud.?sec|soc.?analyst|threat.?intel|incident.?response|vulnerabilit|malware|reverse.?engineer|ctf|oscp|ethical.?hack|bug.?bounty|devsecops/i;
+
+function classifyJob(title){
+  const t = title.toLowerCase();
+  if(/intern/i.test(t)) return {badge:'intern',badgeLabel:'Internship'};
+  if(/red.?team|offensive.?sec/i.test(t)) return {badge:'redteam',badgeLabel:'Red Team'};
+  if(/pentest|penetration/i.test(t)) return {badge:'pentest',badgeLabel:'Pentest'};
+  if(/appsec|application.?sec/i.test(t)) return {badge:'appsec',badgeLabel:'AppSec'};
+  if(/cloud.?sec/i.test(t)) return {badge:'cloudsec',badgeLabel:'Cloud Sec'};
+  return {badge:'infosec',badgeLabel:'InfoSec'};
+}
+
+// Lever public API — no auth, CORS-enabled
+const LEVER_COMPANIES = [
+  {slug:'certik',name:'CertiK'},
+  {slug:'offchainlabs',name:'Offchain Labs'},
+  {slug:'palantir',name:'Palantir'},
+  {slug:'whoop',name:'WHOOP'},
+  {slug:'panopto',name:'Panopto'},
+  {slug:'coins',name:'Coins.ph'},
+];
+
+// Greenhouse public API — no auth, CORS-enabled
+const GH_COMPANIES = [
+  {slug:'cloudflare',name:'Cloudflare'},
+  {slug:'gallup',name:'Gallup'},
+  {slug:'point72',name:'Point72'},
+  {slug:'rsgur',name:'Rockstar Games'},
+];
+
+async function fetchLever({slug,name}){
+  const r = await fetch(`https://api.lever.co/v0/postings/${slug}?mode=json`,{signal:AbortSignal.timeout(8000)});
+  if(!r.ok) return [];
+  const data = await r.json();
+  return data
+    .filter(j=>SEC_RE.test(j.text||''))
+    .map(j=>({
+      ...classifyJob(j.text||''),
+      title:j.text,
+      company:name,
+      platform:'Lever',
+      location:j.categories?.location||j.categories?.allLocations?.[0]||'—',
+      url:j.hostedUrl,
+      _live:true,
+    }));
+}
+
+async function fetchGreenhouse({slug,name}){
+  const r = await fetch(`https://boards-api.greenhouse.io/v1/boards/${slug}/jobs`,{signal:AbortSignal.timeout(8000)});
+  if(!r.ok) return [];
+  const data = await r.json();
+  return (data.jobs||[])
+    .filter(j=>SEC_RE.test(j.title||''))
+    .map(j=>({
+      ...classifyJob(j.title||''),
+      title:j.title,
+      company:name,
+      platform:'Greenhouse',
+      location:j.location?.name||'—',
+      url:j.absolute_url,
+      _live:true,
+    }));
+}
+
+// RemoteOK public API — no auth, CORS-enabled
+async function fetchRemoteOK(){
+  const r = await fetch('https://remoteok.com/api',{signal:AbortSignal.timeout(8000)});
+  if(!r.ok) return [];
+  const data = await r.json();
+  return data.slice(1) // first element is a legal notice object
+    .filter(j=>j.position&&SEC_RE.test(j.position+' '+(j.tags||[]).join(' ')))
+    .map(j=>({
+      ...classifyJob(j.position||''),
+      title:j.position,
+      company:j.company||'—',
+      platform:'RemoteOK',
+      location:'Remote',
+      url:j.url,
+      _live:true,
+    }));
+}
+
+// Remotive public API — no auth, CORS-enabled
+async function fetchRemotive(){
+  const r = await fetch('https://remotive.com/api/remote-jobs',{signal:AbortSignal.timeout(10000)});
+  if(!r.ok) return [];
+  const data = await r.json();
+  return (data.jobs||[])
+    .filter(j=>SEC_RE.test((j.title||'')+' '+(j.category||'')))
+    .map(j=>({
+      ...classifyJob(j.title||''),
+      title:j.title,
+      company:j.company_name||'—',
+      platform:'Remotive',
+      location:j.candidate_required_location||'Worldwide',
+      url:j.url,
+      _live:true,
+    }));
+}
+
+// Quick-search URL map for platforms that don't allow direct API fetch
+const SEARCH_URLS = {
+  linkedin:'https://www.linkedin.com/jobs/search/?keywords=penetration%20testing%20OR%20cybersecurity%20OR%20%22application%20security%22%20OR%20%22red%20team%22&f_WT=2',
+  indeed:'https://www.indeed.com/jobs?q=cybersecurity+OR+%22penetration+testing%22+OR+%22security+engineer%22&l=Remote&fromage=30',
+  naukri:'https://www.naukri.com/cybersecurity-jobs?k=cybersecurity%20penetration%20testing%20vapt%20ethical%20hacking&l=',
+  wwr:'https://weworkremotely.com/remote-jobs/search?term=security',
+  remoteok:'https://remoteok.com/remote-security-jobs',
+};
+function openSearch(p){window.open(SEARCH_URLS[p],'_blank','noopener');}
+
+async function fetchLiveJobs(){
+  const btn = document.getElementById('fetchLiveBtn');
+  const status = document.getElementById('liveStatus');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  status.className = 'live-status loading';
+  status.textContent = '⟳ Fetching live listings from Lever, Greenhouse, RemoteOK & Remotive…';
+
+  try{
+    const results = await Promise.allSettled([
+      ...LEVER_COMPANIES.map(fetchLever),
+      ...GH_COMPANIES.map(fetchGreenhouse),
+      fetchRemoteOK(),
+      fetchRemotive(),
+    ]);
+    const live = results.flatMap(r=>r.status==='fulfilled'?r.value:[]);
+    const staticFiltered = URLS.filter(u=>!live.some(l=>l.url===u.url));
+    allUrls = [...live,...staticFiltered];
+    filterUrls();
+    const ts = new Date().toLocaleTimeString();
+    const byPlatform = ['Lever','Greenhouse','RemoteOK','Remotive'].map(p=>{
+      const n = live.filter(j=>j.platform===p).length;
+      return n?`${p}: ${n}`:'';
+    }).filter(Boolean).join(' · ');
+    status.className = 'live-status ok';
+    status.innerHTML = `✓ ${live.length} live listing${live.length!==1?'s':''} fetched (${byPlatform}) · ${staticFiltered.length} static · ${ts}`;
+  }catch(e){
+    status.className = 'live-status err';
+    status.textContent = `✗ Fetch failed: ${e.message}. Showing static data.`;
+  }finally{
+    btn.disabled = false;
+    btn.classList.remove('loading');
+  }
+}
+
+// ─── TAB NAVIGATION ──────────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const t = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+    document.getElementById('tab-'+t).classList.add('active');
+  });
+});
+
+// ─── THEME TOGGLE ────────────────────────────────────────────────────────────
+(function(){
+  const t=document.querySelector('[data-theme-toggle]');
+  const r=document.documentElement;
+  let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+  r.setAttribute('data-theme',d);
+  function updateIcon(){
+    if(!t)return;
+    t.innerHTML=d==='dark'
+      ?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+      :'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  }
+  updateIcon();
+  t&&t.addEventListener('click',()=>{
+    d=d==='dark'?'light':'dark';
+    r.setAttribute('data-theme',d);
+    updateIcon();
+  });
+})();
+</script>
+</body>
+</html>
